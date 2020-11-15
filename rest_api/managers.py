@@ -1,8 +1,8 @@
 from django.db import models
-from rest_api.models import Tag
+# from rest_api.models import Publication
 from django.utils import timezone
 
-class TagManager(models.Manager):
-    # def published(self):
-    #     return self.filter()
-    pass
+
+# class PublicationManager(models.Manager):
+#     def most_popular_comment(self):
+#         return Comment.objects.filter(publication=self.filter())

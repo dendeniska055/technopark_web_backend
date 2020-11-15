@@ -27,21 +27,16 @@ SECRET_KEY = '%fzi0ci#+j@crw87zdijndj!9slleet(*yf_ulsj_8@_mq79#p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-#AWS setings
-AWS_ACCESS_KEY_ID = 'AKIA5ZAIDH35E7GMA4VT'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_REGION_NAME = 'us-east-2'
-AWS_BUCKET_NAME = 'instagramtp2020'
-EXPIRES_DEFAULT = 3600
-
 ALLOWED_HOSTS = [
-    'thingworx.asuscomm.com',
-    'profkom-bot-bmstu.herokuapp.com',
     '127.0.0.1',
     'localhost',
     '0.0.0.0',
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
 
 # Application definition
 
