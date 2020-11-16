@@ -26,8 +26,8 @@ from instagram import views
 from rest_api import views as rest_api_views
 
 router = routers.DefaultRouter()
-# router.register(r'users', rest_api_views.UserViewSet)
-# router.register(r'publication', rest_api_views.PublicationViewSet)
+router.register(r'users', rest_api_views.UserViewSet)
+router.register(r'publication', rest_api_views.PublicationViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls, name="admin"),
