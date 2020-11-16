@@ -1,38 +1,30 @@
 from django.db import models
 # from rest_api.managers import PublicationManager
 from django.db.models import Count
+from django.contrib.auth.models import User
 
-from pygments.lexers import get_all_lexers
-from pygments.styles import get_all_styles
-
-LEXERS = [item for item in get_all_lexers() if item[1]]
-LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
-STYLE_CHOICES = sorted([(item, item) for item in get_all_styles()])
-
-class User(models.Model):
-    name = models.CharField(max_length=128, verbose_name='Никнейм')
+class Profile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
     birthday = models.DateField(verbose_name='Дата рождения')
-    registration_date = models.DateField(verbose_name='Дата регистрации')
-    email = models.EmailField(verbose_name='Email')
     avatar = models.ForeignKey('Pictures', null=True, blank=True,
                                verbose_name='Аватарка', on_delete=models.SET_NULL)
     description = models.TextField(
         null=True, blank=True, verbose_name='Описание')
 
     def __str__(self):
-        return self.name
+        return self.user
 
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-        ordering = ['name']
+        ordering = ['user']
 
 
 class Subscription(models.Model):
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name='Автор', related_name='author')
+        Profile, on_delete=models.CASCADE, verbose_name='Автор', related_name='author')
     subscriber = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name='Подписчик', related_name='subscriber')
+        Profile, on_delete=models.CASCADE, verbose_name='Подписчик', related_name='subscriber')
     date = models.DateTimeField(
         verbose_name='Дата подписки', auto_now_add=True)
 
@@ -52,7 +44,7 @@ class PublicationManager(models.Manager):
 
 class Publication(models.Model):
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name='Автор')
+        Profile, on_delete=models.CASCADE, verbose_name='Автор')
     title = models.CharField(
         max_length=1024, verbose_name='Заголовок', null=True, blank=True)
     description = models.TextField(
@@ -72,7 +64,7 @@ class Publication(models.Model):
 
 class Pictures(models.Model):
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name='Автор')
+        Profile, on_delete=models.CASCADE, verbose_name='Автор')
     publication = models.ForeignKey(
         Publication, on_delete=models.CASCADE, verbose_name='Публикация', null=True, blank=True)
     photo = models.ImageField(upload_to='photo')
@@ -87,7 +79,7 @@ class Pictures(models.Model):
 
 class Comment(models.Model):
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name='Автор')
+        Profile, on_delete=models.CASCADE, verbose_name='Автор')
     publication = models.ForeignKey(
         Publication, related_name='comments', on_delete=models.CASCADE, verbose_name='Публиация')
     comment = models.TextField(verbose_name='Комментарий')
@@ -104,7 +96,7 @@ class Comment(models.Model):
 
 class Like(models.Model):
     author = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name='Автор')
+        Profile, on_delete=models.CASCADE, verbose_name='Автор')
     publication = models.ForeignKey(
         Publication, related_name='likes', on_delete=models.CASCADE, verbose_name='Публиация', null=True, blank=True)
     comment = models.ForeignKey(
