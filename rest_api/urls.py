@@ -4,5 +4,7 @@ from django.urls import path
 app_name = 'rest_api'
 
 urlpatterns = [
-    path('', views.index, name='index')
+    path('', views.index, name='index'),
+    path('login/', views.login, name="login"),
+    path('logout/', views.logout, name="logout"),
 ]

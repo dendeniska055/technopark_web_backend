@@ -3,16 +3,30 @@ from django.db import models
 from django.db.models import Count
 from django.contrib.auth.models import User
 
+from django.db.models import F, Value
+
+
+class ProfileManager(models.Manager):
+    def all(self):
+        return Profile.objects.annotate(
+            email=F('user__email'),
+            username=F('user__username'),
+        )
+
+
 class Profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, verbose_name='Пользователь', related_name='profile')
     birthday = models.DateField(verbose_name='Дата рождения')
     avatar = models.ForeignKey('Pictures', null=True, blank=True,
                                verbose_name='Аватарка', on_delete=models.SET_NULL)
     description = models.TextField(
         null=True, blank=True, verbose_name='Описание')
 
+    objects = ProfileManager()
+
     def __str__(self):
-        return self.user
+        return self.user.username
 
     class Meta:
         verbose_name = 'Пользователь'
@@ -39,8 +53,10 @@ class Subscription(models.Model):
 class PublicationManager(models.Manager):
     def most_popular(self):
         return self.annotate(count_likes=Count('likes')).order_by('-count_likes')
+
     def most_popular_comments(self, obj):
         return Comment.objects.filter(publication=obj).annotate(count_likes=Count('likes')).order_by('-count_likes')
+
 
 class Publication(models.Model):
     author = models.ForeignKey(
