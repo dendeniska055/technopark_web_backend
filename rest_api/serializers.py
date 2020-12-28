@@ -96,15 +96,21 @@ class PublicationSerializer(serializers.HyperlinkedModelSerializer):
     # )
     user = serializers.PrimaryKeyRelatedField(
         many=False,
-        required=False,
-        read_only=True,
-        default=serializers.CurrentUserDefault())
+        required=False, 
+        # read_only=True,
+        queryset=User.objects.all(),
+        default=serializers.CurrentUserDefault()
+        )
     description = serializers.CharField(required=False)
     date = serializers.DateTimeField(read_only=True,
                                      default=serializers.CreateOnlyDefault(
                                          datetime.now)
                                      )
     photo = serializers.FileField(required=True)
+    username = serializers.CharField(read_only=True, source='user.username')
+    avatar = serializers.CharField(read_only=True, source='user.profile.photo')
+    tagss = serializers.CharField(read_only=True, source='*')
+    tags_title = serializers.SerializerMethodField()
 
     tags = serializers.PrimaryKeyRelatedField(
         many=True,
@@ -118,6 +124,9 @@ class PublicationSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Publication
         fields = "__all__"
+
+    def get_tags_title(self, obj):
+        return obj.tags.values('id', 'title').all()
 
 
 class SubscriptionSerializer(serializers.HyperlinkedModelSerializer):
@@ -139,9 +148,13 @@ class SubscriptionSerializer(serializers.HyperlinkedModelSerializer):
 
 class CommentSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.IntegerField(read_only=True)
-    user = serializers.HiddenField(
+    user = serializers.PrimaryKeyRelatedField(
+        many=False,
+        required=False, 
+        # read_only=True,
+        queryset=User.objects.all(),
         default=serializers.CurrentUserDefault()
-    )
+        )
     publication = serializers.PrimaryKeyRelatedField(
         required=True, queryset=Publication.objects.all())
     comment = serializers.CharField(required=True)
@@ -149,7 +162,9 @@ class CommentSerializer(serializers.HyperlinkedModelSerializer):
                                      default=serializers.CreateOnlyDefault(
                                          datetime.now)
                                      )
-
+    username = serializers.CharField(read_only=True, source='user.username')
+    avatar = serializers.CharField(read_only=True, source='user.profile.photo')
+    
     class Meta:
         model = Comment
         fields = "__all__"
