@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_api',
     'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -134,6 +135,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+# MEDIA_URL = '/photo/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads'),
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),

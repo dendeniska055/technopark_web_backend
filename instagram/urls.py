@@ -26,14 +26,18 @@ from instagram import views
 from rest_api import views as rest_api_views
 
 router = routers.DefaultRouter()
-router.register(r'users', rest_api_views.UserViewSet, basename='users')
 router.register(r'profile', rest_api_views.ProfileViewSet, basename='profile')
 router.register(r'publication', rest_api_views.PublicationViewSet, basename='publication')
+router.register(r'subscription', rest_api_views.SubscriptionViewSet, basename='subscription')
+router.register(r'comment', rest_api_views.CommentViewSet, basename='comment')
+# router.register(r'like', rest_api_views.LikeViewSet, basename='like')
+router.register(r'tag', rest_api_views.TagViewSet, basename='tag')
 
 urlpatterns = [
     path('admin/', admin.site.urls, name="admin"),
     path('rest_api/', include('rest_api.urls'), name="rest_api"),
-    path('', views.index, name="index"),
+    # path('', views.index, name="index"),
     path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static('photo/', document_root='photo/')
+ 

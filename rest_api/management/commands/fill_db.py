@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from rest_api.models import User, Publication, Pictures, Comment, Like, Tag, Subscription
+from rest_api.models import User, Publication, Comment, Like, Tag, Subscription
 import json
 from datetime import datetime, timedelta
 from django.db.models import Q
